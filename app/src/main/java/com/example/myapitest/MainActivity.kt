@@ -1,8 +1,17 @@
 package com.example.myapitest
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myapitest.databinding.ActivityMainBinding
+import com.example.myapitest.service.RetroFitClient
+import com.example.myapitest.service.safeApiCall
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
 
@@ -12,7 +21,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        requestLocationPermission()
+//        requestLocationPermission()
         setupView()
 
         // 1- Criar tela de Login com algum provedor do Firebase (Telefone, Google)
@@ -36,7 +45,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupView() {
-        // TODO
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+
     }
 
     private fun requestLocationPermission() {
@@ -44,6 +54,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchItems() {
-        // TODO
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall {
+                RetroFitClient .apiService.getCars()
+            }
+            Log.d("HelloWorld", "Hello ${result.toString()}")
+        }
+    }
+
+    companion object {
+        fun newIntent(context: Context) = Intent(context, MainActivity::class.java)
     }
 }
