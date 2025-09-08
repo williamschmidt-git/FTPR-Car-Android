@@ -1,5 +1,10 @@
 package com.example.myapitest.model
 
+data class CarResponse(
+    val id: String,
+    val value: Car
+)
+
 data class Car(
     val id: String,
     val imageUrl: String,
@@ -8,6 +13,7 @@ data class Car(
     val licence: String,
     val place: Place
 )
+
 data class Place(
     val lat: Double,
     val long: Double

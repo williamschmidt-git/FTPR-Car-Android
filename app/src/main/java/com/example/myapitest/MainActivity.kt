@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             withContext(Dispatchers.Main) {
                 binding.swipeRefreshLayout.isRefreshing = false
                 when(result) {
-                    is Result.Error -> {4
+                    is Result.Error -> {
                         Toast.makeText(
                             this@MainActivity,
                             "Erro ao buscar carros",
