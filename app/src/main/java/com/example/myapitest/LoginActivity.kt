@@ -26,8 +26,9 @@ class LoginActivity: AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setupView()
-        verifyLoggedUser()
+        navigateToMainActivity()
+//        setupView()
+//        verifyLoggedUser()
     }
 
     private fun setupView() {

@@ -4,14 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.myapitest.adapter.CarAdapter
 import com.example.myapitest.databinding.ActivityMainBinding
+import com.example.myapitest.model.Car
+import com.example.myapitest.service.Result
 import com.example.myapitest.service.RetroFitClient
 import com.example.myapitest.service.safeApiCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
 
@@ -46,7 +51,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupView() {
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
-
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            binding.swipeRefreshLayout.isRefreshing = true
+            fetchItems()
+        }
     }
 
     private fun requestLocationPermission() {
@@ -58,7 +66,25 @@ class MainActivity : AppCompatActivity() {
             val result = safeApiCall {
                 RetroFitClient .apiService.getCars()
             }
-            Log.d("HelloWorld", "Hello ${result.toString()}")
+            withContext(Dispatchers.Main) {
+                binding.swipeRefreshLayout.isRefreshing = false
+                when(result) {
+                    is Result.Error -> {4
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Erro ao buscar carros",
+                            Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                    is Result.Success<*> -> {
+                        val adapter = CarAdapter(result.data as List<Car>) { car ->
+
+                            startActivity(CarDetailActivity.newIntent(this@MainActivity, car.id))
+                        }
+                        binding.recyclerView.adapter = adapter
+                    }
+                }
+            }
         }
     }
 
