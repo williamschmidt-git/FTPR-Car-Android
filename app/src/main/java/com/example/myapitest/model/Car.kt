@@ -11,10 +11,15 @@ data class Car(
     val year: String,
     val name: String,
     val licence: String,
-    val place: Place
+    val place: CarLocation
 )
 
 data class Place(
     val lat: Double,
     val long: Double
+)
+
+data class CarLocation(
+    val lat: Double,
+    val long: Double,
 )

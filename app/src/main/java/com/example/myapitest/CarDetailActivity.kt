@@ -81,12 +81,12 @@ class CarDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         binding.toolbar.setNavigationOnClickListener {
             finish()
         }
-//        binding.deleteCTA.setOnClickListener {
-//            deleteItem()
-//        }
-//        binding.editCTA.setOnClickListener {
-//            editItem()
-//        }
+        binding.deleteCTA.setOnClickListener {
+            deleteItem()
+        }
+        binding.editCTA.setOnClickListener {
+            editItem()
+        }
     }
 
     private fun loadItem(){
@@ -125,6 +125,23 @@ class CarDetailActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun editItem() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = safeApiCall { RetroFitClient.apiService.updateCar(car.id, car.copy(year = binding.year.text.toString())) }
+
+            withContext(Dispatchers.Main) {
+                when (result) {
+                    is Result.Error -> {
+                        Toast.makeText(this@CarDetailActivity, "Erro ao editar", Toast.LENGTH_SHORT).show()
+                    }
+                    is Result.Success -> {
+                        Toast.makeText(this@CarDetailActivity, "Editado com sucesso", Toast.LENGTH_SHORT).show()
+                        finish()
+                    }
+                }
+            }
+        }
+    }
     private fun handleError() {
 //        TODO()
     }
